@@ -11,7 +11,7 @@ app.get("/api/reviews/:review_id", getReview);
 
 app.all("/*", notFound);
 
-app.use("/", badDataType);
+app.use(badDataType);
 
 
 module.exports = app;

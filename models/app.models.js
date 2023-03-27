@@ -5,5 +5,10 @@ exports.fetchCategories = () => {
 };
 
 exports.fetchReview = (reviewId) => {
-	return db.query("SELECT * FROM reviews WHERE review_id = $1", [reviewId]);
+	return db
+		.query("SELECT * FROM reviews WHERE review_id = $1", [reviewId])
+		.then(
+			(result) => result,
+			(err) => err
+		);
 };
