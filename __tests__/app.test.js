@@ -32,3 +32,37 @@ describe("200 GET /api/categories should return all categories with the followin
 			});
 	});
 });
+
+describe("200 GET /api/reviews/:review_id should return the information bound to that review in te database", () => {
+	test("should get information from the request review id", () => {
+		return request(app)
+			.get("/api/reviews/3")
+			.expect(200)
+			.then(({ body }) => {
+				const review3 = [
+					{
+						category: "social deduction",
+						created_at: "2021-01-18T10:01:41.251Z",
+						designer: "Akihisa Okui",
+						owner: "bainesface",
+						review_body: "We couldn't find the werewolf!",
+						review_id: 3,
+						review_img_url:
+							"https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+						title: "Ultimate Werewolf",
+						votes: 5,
+					},
+				];
+				expect(body.review).toEqual(review3);
+			});
+	});
+	test("should return a 404 error with a corresponding message when no review is found", () => {
+		return request(app)
+			.get("/api/reviews/908")
+			.expect(404)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Not found" });
+			});
+	});
+});
+
