@@ -56,12 +56,28 @@ describe("200 GET /api/reviews/:review_id should return the information bound to
 				expect(body.review).toEqual(review3);
 			});
 	});
-	test("should return a 404 error with a corresponding message when no review is found", () => {
+	test("404 error with a corresponding message when no review is found", () => {
 		return request(app)
 			.get("/api/reviews/908")
 			.expect(404)
 			.then(({ body }) => {
 				expect(body).toEqual({ msg: "Not found" });
+			});
+	});
+	test("400 Bad request if the data type of the review id is wrong ", () => {
+		return request(app)
+			.get("/api/reviews/myreview")
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Bad Request" });
+			});
+	});
+	test("400 Bad request if the data type of the review id is wrong ", () => {
+		return request(app)
+			.get("/api/reviews/3.2")
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Bad Request" });
 			});
 	});
 });

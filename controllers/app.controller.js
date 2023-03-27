@@ -7,7 +7,12 @@ exports.getCategories = async (req, res) => {
 
 exports.getReview = async (req, res, next) => {
 	const reviewId = req.params["review_id"];
-	const review = await fetchReview(reviewId);
-	if (review.rowCount === 0) next();
-	else res.status(200).send({ review: review.rows });
+  try {
+		const review = await fetchReview(reviewId);
+		review.rowCount === 0
+			? next()
+			: res.status(200).send({ review: review.rows });
+	} catch (err) {
+		next(err);
+	}
 };
