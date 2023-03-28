@@ -5,10 +5,9 @@ exports.getCategories = async (req, res) => {
 	res.status(200).send({ categories: categories.rows });
 };
 
-exports.getReview = async (req, res, next) => {
+exports.getReview = (req, res, next) => {
 	const reviewId = req.params["review_id"];
-	const review = await fetchReview(reviewId);
-	if (review.code === "22P02") next(review);
-	else if (review.rowCount === 0) next();
-	else res.status(200).send({ review: review.rows });
+	fetchReview(reviewId)
+		.then((review) => res.status(200).send({ review }))
+		.catch((err) => next(err));
 };
