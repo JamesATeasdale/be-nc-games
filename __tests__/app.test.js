@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
+require("jest-sorted");
 
 afterAll(() => db.end());
 
@@ -81,4 +82,16 @@ describe("200 GET /api/reviews/:review_id should return the information bound to
 			});
 	});
 });
+
+describe("GET /api/reviews", () => {
+	test("should return all of the reviews with their corresponding comment count imported from the comment database ascending by date", () => {
+		return request(app)
+			.get("/api/reviews")
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.reviews).toBeSortedBy("created_at", { descending: true });
+			});
+	});
+});
+
 

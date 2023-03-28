@@ -1,6 +1,10 @@
 const express = require("express");
 const app = express();
-const { getCategories, getReview } = require("./controllers/app.controller");
+const {
+	getAllCategories,
+	getReview,
+	getAllReviews,
+} = require("./controllers/app.controller");
 const {
 	notFound,
 	badDataType,
@@ -9,9 +13,11 @@ const {
 
 app.use(express.json());
 
-app.get("/api/categories", getCategories);
+app.get("/api/categories", getAllCategories);
 
 app.get("/api/reviews/:review_id", getReview);
+
+app.get("/api/reviews", getAllReviews);
 
 app.all("/*", notFound);
 app.use(badDataType);

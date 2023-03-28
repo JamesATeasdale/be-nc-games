@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-exports.fetchCategories = () => db.query(`SELECT * FROM categories;`);
+exports.fetchAllCategories = () => db.query(`SELECT * FROM categories;`);
 
 exports.fetchReview = (reviewId) =>
 	db
@@ -10,3 +10,16 @@ exports.fetchReview = (reviewId) =>
 				? Promise.reject({ status: 404, msg: "Not found" })
 				: result.rows
 		);
+
+exports.fetchAllReviews = () =>
+	db
+		.query(
+			`SELECT  reviews.*, COUNT(author) AS comment_count
+    FROM comments 
+    LEFT JOIN reviews ON reviews.owner = comments.author
+    GROUP BY reviews.review_id
+    ORDER BY reviews.created_at DESC;`
+		)
+		.then((result) => {
+			return result.rows;
+		});
