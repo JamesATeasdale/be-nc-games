@@ -4,6 +4,7 @@ const {
 	getAllCategories,
 	getReview,
 	getAllReviews,
+	getReviewComments,
 } = require("./controllers/app.controller");
 const {
 	notFound,
@@ -16,6 +17,8 @@ app.use(express.json());
 app.get("/api/categories", getAllCategories);
 
 app.get("/api/reviews/:review_id", getReview);
+
+app.get("/api/reviews/:review_id/comments", getReviewComments);
 
 app.get("/api/reviews", getAllReviews);
 

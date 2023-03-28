@@ -21,3 +21,11 @@ exports.fetchAllReviews = () =>
     ORDER BY reviews.created_at DESC;`
 		)
 		.then((result) => result.rows);
+
+exports.fetchReviewComments = (review_id) =>
+	db
+		.query(
+			"SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at DESC",
+			[review_id]
+		)
+		.then((result) => result.rows);
