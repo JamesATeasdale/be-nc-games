@@ -105,4 +105,39 @@ describe("GET /api/reviews", () => {
 	});
 });
 
+describe("GET /api/reviews/:review_id/comments", () => {
+	test("should return the comments of the review using the review_id", () => {
+		return request(app)
+			.get("/api/reviews/2/comments")
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.comments).toBeSortedBy("created_at", { descending: true });
+				expect(body.comments).toHaveLength(3);
+				for (comment of body.comments) {
+					expect(comment).toHaveProperty("comment_id");
+					expect(comment).toHaveProperty("votes");
+					expect(comment).toHaveProperty("created_at");
+					expect(comment).toHaveProperty("author");
+					expect(comment).toHaveProperty("body");
+					expect(comment).toHaveProperty("review_id");
+				}
+			});
+	});
+	test("404 Not found if review_id isn't in the database", () => {
+		return request(app)
+			.get("/api/reviews/78/comments")
+			.expect(404)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Not found" });
+			});
+	});
+	test("400 If key is not the correct data type", () => {
+		return request(app)
+			.get("/api/reviews/hello/comments")
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Bad Request" });
+			});
+	});
+});
 
