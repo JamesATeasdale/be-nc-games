@@ -1,8 +1,9 @@
 const { fetchCategories, fetchReview } = require("../models/app.models");
 
-exports.getCategories = async (req, res) => {
-	const categories = await fetchCategories();
-	res.status(200).send({ categories: categories.rows });
+exports.getCategories = (req, res) => {
+	fetchCategories().then((categories) =>
+		res.status(200).send({ categories: categories.rows })
+	);
 };
 
 exports.getReview = (req, res, next) => {
