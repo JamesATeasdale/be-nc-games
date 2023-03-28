@@ -14,7 +14,7 @@ exports.fetchReview = (reviewId) =>
 exports.fetchAllReviews = () =>
 	db
 		.query(
-			`SELECT reviews.title, reviews.designer, reviews.owner, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(author)::INT AS comment_count
+			`SELECT reviews.title, reviews.designer, reviews.owner, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.category, reviews.review_id, COUNT(author)::INT AS comment_count
     FROM comments 
     LEFT JOIN reviews ON reviews.owner = comments.author
     GROUP BY reviews.review_id

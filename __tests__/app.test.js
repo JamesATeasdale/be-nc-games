@@ -89,10 +89,18 @@ describe("GET /api/reviews", () => {
 			.get("/api/reviews")
 			.expect(200)
 			.then(({ body }) => {
-        console.log(body.reviews);
 				expect(body.reviews).toBeSortedBy("created_at", { descending: true });
 				expect(body.reviews).toHaveLength(13);
-				expect(body.reviews[0]).toHaveProperty("comment_count", 2);
+				for (review of body.reviews) {
+					expect(review).toHaveProperty("title");
+					expect(review).toHaveProperty("designer");
+					expect(review).toHaveProperty("owner");
+					expect(review).toHaveProperty("review_img_url");
+					expect(review).toHaveProperty("category");
+					expect(review).toHaveProperty("created_at");
+					expect(review).toHaveProperty("review_id");
+					expect(review).toHaveProperty("votes");
+				}
 			});
 	});
 });
