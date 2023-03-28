@@ -14,12 +14,10 @@ exports.fetchReview = (reviewId) =>
 exports.fetchAllReviews = () =>
 	db
 		.query(
-			`SELECT  reviews.*, COUNT(author) AS comment_count
+			`SELECT reviews.title, reviews.designer, reviews.owner, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(author)::INT AS comment_count
     FROM comments 
     LEFT JOIN reviews ON reviews.owner = comments.author
     GROUP BY reviews.review_id
     ORDER BY reviews.created_at DESC;`
 		)
-		.then((result) => {
-			return result.rows;
-		});
+		.then((result) => result.rows);
