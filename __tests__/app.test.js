@@ -9,8 +9,8 @@ afterAll(() => db.end());
 
 beforeEach(() => seed(data));
 
-describe("200 GET /api/categories should return all categories with the following properties: slug, description", () => {
-	test("should return all categories", () => {
+describe("GET /api/categories should return all categories with the following properties: slug, description", () => {
+	test("200 return all categories", () => {
 		return request(app)
 			.get("/api/categories")
 			.expect(200)
@@ -24,7 +24,7 @@ describe("200 GET /api/categories should return all categories with the followin
 				);
 			});
 	});
-	test("404 GET should return an error", () => {
+	test("404 should return an error", () => {
 		return request(app)
 			.get("/api/categores") // typo
 			.expect(404)
@@ -34,8 +34,8 @@ describe("200 GET /api/categories should return all categories with the followin
 	});
 });
 
-describe("200 GET /api/reviews/:review_id should return the information bound to that review in te database", () => {
-	test("should get information from the request review id", () => {
+describe("GET /api/reviews/:review_id should return the information bound to that review in te database", () => {
+	test("200 should get information from the request review id", () => {
 		return request(app)
 			.get("/api/reviews/3")
 			.expect(200)
@@ -84,7 +84,7 @@ describe("200 GET /api/reviews/:review_id should return the information bound to
 });
 
 describe("GET /api/reviews", () => {
-	test("should return all of the reviews with their corresponding comment count imported from the comment database ascending by date", () => {
+	test("200 should return all of the reviews with their corresponding comment count imported from the comment database ascending by date", () => {
 		return request(app)
 			.get("/api/reviews")
 			.expect(200)
@@ -106,7 +106,7 @@ describe("GET /api/reviews", () => {
 });
 
 describe("GET /api/reviews/:review_id/comments", () => {
-	test("should return the comments of the review using the review_id", () => {
+	test("200 should return the comments of the review using the review_id", () => {
 		return request(app)
 			.get("/api/reviews/2/comments")
 			.expect(200)
@@ -123,6 +123,16 @@ describe("GET /api/reviews/:review_id/comments", () => {
 				}
 			});
 	});
+	test("200 should return an empty array if the ID is valid, but there are no comments", () => {
+		return request(app)
+			.get("/api/reviews/4/comments")
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.comments).toHaveLength(0);
+				expect(body.comments).toEqual([]);
+			});
+	});
+  
 	test("404 Not found if review_id isn't in the database", () => {
 		return request(app)
 			.get("/api/reviews/78/comments")
