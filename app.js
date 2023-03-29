@@ -6,6 +6,7 @@ const {
 	getAllReviews,
 	getReviewComments,
 	postComment,
+	patchReview,
 } = require("./controllers/app.controller");
 const {
 	notFound,
@@ -25,6 +26,8 @@ app.get("/api/reviews/:review_id/comments", getReviewComments);
 app.get("/api/reviews", getAllReviews);
 
 app.post("/api/reviews/:review_id/comments", postComment);
+
+app.patch("/api/reviews/:review_id", patchReview);
 
 app.all("/*", notFound);
 

@@ -188,3 +188,85 @@ describe("POST /api/reviews/:review_id/comments should post a new comment when g
 	});
 });
 
+describe("PATCH /api/reviews/:review_id should change vote value", () => {
+	test("202 if the request was accepted and the vote of the review was incremented", () => {
+		return request(app)
+			.patch("/api/reviews/3")
+			.send({ votes: 2 })
+			.expect(202)
+			.then(({ body }) => {
+				const expectedBody = {
+					review_id: 3,
+					title: "Ultimate Werewolf",
+					category: "social deduction",
+					designer: "Akihisa Okui",
+					owner: "bainesface",
+					review_body: "We couldn't find the werewolf!",
+					review_img_url:
+						"https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+					created_at: "2021-01-18T10:01:41.251Z",
+					votes: 7,
+				};
+				expect(body.review.votes).toEqual(7);
+				expect(body.review.votes > data.reviewData[2].votes).toBe(true);
+				expect(body.review).toEqual(expectedBody);
+			});
+	});
+	test("202 if the request was accepted and the vote of the review was incremented", () => {
+		return request(app)
+			.patch("/api/reviews/2")
+			.send({ votes: -2 })
+			.expect(202)
+			.then(({ body }) => {
+				const expectedBody = {
+					review_id: 2,
+					title: "Jenga",
+					category: "dexterity",
+					designer: "Leslie Scott",
+					owner: "philippaclaire9",
+					review_body: "Fiddly fun for all the family",
+					review_img_url:
+						"https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700",
+					created_at: "2021-01-18T10:01:41.251Z",
+					votes: 3,
+				};
+				expect(body.review.votes).toEqual(3);
+				expect(body.review.votes < data.reviewData[1].votes).toBe(true);
+				expect(body.review).toEqual(expectedBody);
+			});
+	});
+	test("404 if reviewId not found", () => {
+		return request(app)
+			.patch("/api/reviews/79")
+			.send({ votes: 55 })
+			.expect(404)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Not found" });
+			});
+	});
+	test("400 if the body is in an incorrect format", () => {
+		return request(app)
+			.patch("/api/reviews/4")
+			.send({
+				person: "Mitch",
+				msg: "Hello! just letting you know that we did find your cat, he is doing well and is eating us out of pocket. Please pick him up ASAP!",
+			})
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Bad Request" });
+			});
+	});
+	test("400 if the body is in an incorrect format", () => {
+		return request(app)
+			.patch("/api/reviews/1")
+			.send({
+				votes: "Bela likes this",
+			})
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Bad Request" });
+			});
+	});
+});
+
+
