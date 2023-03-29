@@ -189,11 +189,11 @@ describe("POST /api/reviews/:review_id/comments should post a new comment when g
 });
 
 describe("PATCH /api/reviews/:review_id should change vote value", () => {
-	test("202 if the request was accepted and the vote of the review was incremented", () => {
+	test("200 if the request was accepted and the vote of the review was incremented", () => {
 		return request(app)
 			.patch("/api/reviews/3")
 			.send({ votes: 2 })
-			.expect(202)
+			.expect(200)
 			.then(({ body }) => {
 				const expectedBody = {
 					review_id: 3,
@@ -212,11 +212,11 @@ describe("PATCH /api/reviews/:review_id should change vote value", () => {
 				expect(body.review).toEqual(expectedBody);
 			});
 	});
-	test("202 if the request was accepted and the vote of the review was incremented", () => {
+	test("200 if the request was accepted and the vote of the review was decremented", () => {
 		return request(app)
 			.patch("/api/reviews/2")
 			.send({ votes: -2 })
-			.expect(202)
+			.expect(200)
 			.then(({ body }) => {
 				const expectedBody = {
 					review_id: 2,
@@ -262,6 +262,15 @@ describe("PATCH /api/reviews/:review_id should change vote value", () => {
 			.send({
 				votes: "Bela likes this",
 			})
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Bad Request" });
+			});
+	});
+	test("400 if reviewId is the wrong data type", () => {
+		return request(app)
+			.patch("/api/reviews/heather")
+			.send({ votes: 89 })
 			.expect(400)
 			.then(({ body }) => {
 				expect(body).toEqual({ msg: "Bad Request" });

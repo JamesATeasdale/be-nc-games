@@ -41,6 +41,6 @@ exports.patchReview = (req, res, next) => {
 	const reviewId = req.params.review_id;
 	const patch = req.body;
 	Promise.all([fetchReview(reviewId), changeReview(reviewId, patch)])
-		.then((promises) => res.status(202).send({ review: promises[1] }))
+		.then((promises) => res.status(200).send({ review: promises[1] }))
 		.catch((err) => next(err));
 };
