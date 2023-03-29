@@ -12,7 +12,7 @@ exports.getAllCategories = (req, res) =>
 	);
 
 exports.getReview = (req, res, next) =>
-	fetchReview(req.params["review_id"])
+	fetchReview(req.params.review_id)
 		.then((review) => res.status(200).send({ review }))
 		.catch((err) => next(err));
 
@@ -22,14 +22,14 @@ exports.getAllReviews = (req, res, next) =>
 		.catch((err) => next(err));
 
 exports.getReviewComments = (req, res, next) => {
-	const reviewId = req.params["review_id"];
+	const reviewId = req.params.review_id;
 	Promise.all([fetchReview(reviewId), fetchReviewComments(reviewId)])
 		.then((promises) => res.status(200).send({ comments: promises[1] }))
 		.catch((err) => next(err));
 };
 
 exports.postComment = (req, res, next) => {
-	const reviewId = req.params["review_id"];
+	const reviewId = req.params.review_id;
 	const user = req.body;
 	Promise.all([fetchReview(reviewId), addComment(reviewId, user)])
 		.then((promises) => res.status(201).send({ comment: promises[1] }))

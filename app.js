@@ -11,7 +11,7 @@ const {
 	notFound,
 	badDataType,
 	customErrors,
-	lastResort,
+	errorChecker,
 } = require("./controllers/errors.controller");
 
 app.use(express.json());
@@ -30,7 +30,7 @@ app.all("/*", notFound);
 
 app.use(badDataType);
 app.use(customErrors);
-app.use(lastResort);
+app.use(errorChecker);
 
 
 module.exports = app;

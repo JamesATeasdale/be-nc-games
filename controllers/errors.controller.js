@@ -9,6 +9,9 @@ exports.customErrors = (err, req, res, next) => {
 	else next(err);
 };
 
-exports.lastResort = (err, req, res, next) => res.status(500).send(err);
+exports.errorChecker = (err, req, res, next) => {
+	console.log(err);
+	res.status(500).send(err);
+};
 
 exports.notFound = (req, res) => res.status(404).send({ msg: "Not found" });

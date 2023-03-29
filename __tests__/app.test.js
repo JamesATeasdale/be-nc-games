@@ -146,16 +146,13 @@ describe("POST /api/reviews/:review_id/comments should post a new comment when g
 			.expect(201)
 			.then(({ body }) => {
 				expect(body.comment[0]).toHaveProperty("comment_id");
-				expect(body.comment[0]).toHaveProperty("body");
-				expect(body.comment[0]).toHaveProperty("review_id");
-				expect(body.comment[0]).toHaveProperty("author");
 				expect(body.comment[0]).toHaveProperty("created_at");
-				expect(body.comment[0].review_id).toEqual(2);
-				expect(body.comment[0].author).toEqual("mallionaire");
-				expect(body.comment[0].body).toEqual("Great for beginners");
+				expect(body.comment[0].review_id).toBe(2);
+				expect(body.comment[0].author).toBe("mallionaire");
+				expect(body.comment[0].body).toBe("Great for beginners");
 			});
 	});
-	test("404 should return an error if given a bad review_id", () => {
+	test("404 should return an error if given review_id isn't found", () => {
 		return request(app)
 			.post("/api/reviews/9001/comments")
 			.send({ author: "mallionaire", body: "Best wardrobe I've ever used" })
@@ -169,12 +166,22 @@ describe("POST /api/reviews/:review_id/comments should post a new comment when g
 			.expect(400)
 			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
 	});
-	test("400 If the body is in an unacceptable format", () => {
+	test("400 If the object is in an unacceptable format", () => {
 		return request(app)
 			.post("/api/reviews/3/comments")
 			.send({
 				person: "Haz",
 				msg: "Hello, I am still waiting for my delivery of oranges",
+			})
+			.expect(400)
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
+	});
+	test("400 If the body is fine, but the author key isn't", () => {
+		return request(app)
+			.post("/api/reviews/3/comments")
+			.send({
+				person: "Dave",
+				body: "I really love this breed of dog, thanks for sharing",
 			})
 			.expect(400)
 			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
