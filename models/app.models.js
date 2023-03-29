@@ -40,3 +40,12 @@ exports.addComment = (reviewId, user) => {
 		)
 		.then((postedComment) => postedComment.rows);
 };
+
+exports.changeReview = (reviewId, patch) => {
+	return db
+		.query(
+			`UPDATE reviews SET votes = votes + $2 WHERE review_id = $1 RETURNING *`,
+			[reviewId, patch.votes]
+		)
+		.then((updatedReview) => updatedReview.rows[0]);
+};
