@@ -6,7 +6,6 @@ const seed = require("../db/seeds/seed");
 require("jest-sorted");
 
 afterAll(() => db.end());
-
 beforeEach(() => seed(data));
 
 describe("GET /api/categories should return all categories with the following properties: slug, description", () => {
@@ -28,9 +27,7 @@ describe("GET /api/categories should return all categories with the following pr
 		return request(app)
 			.get("/api/categores") // typo
 			.expect(404)
-			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Not found" });
-			});
+			.then(({ body }) => expect(body).toEqual({ msg: "Not found" }));
 	});
 });
 
@@ -40,7 +37,7 @@ describe("GET /api/reviews/:review_id should return the information bound to tha
 			.get("/api/reviews/3")
 			.expect(200)
 			.then(({ body }) => {
-				const review3 = [
+				const review = [
 					{
 						category: "social deduction",
 						created_at: "2021-01-18T10:01:41.251Z",
@@ -54,32 +51,26 @@ describe("GET /api/reviews/:review_id should return the information bound to tha
 						votes: 5,
 					},
 				];
-				expect(body.review).toEqual(review3);
+				expect(body.review).toEqual(review);
 			});
 	});
 	test("404 error with a corresponding message when no review is found", () => {
 		return request(app)
 			.get("/api/reviews/908")
 			.expect(404)
-			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Not found" });
-			});
+			.then(({ body }) => expect(body).toEqual({ msg: "Not found" }));
 	});
 	test("400 Bad request if the data type of the review id is string ", () => {
 		return request(app)
 			.get("/api/reviews/myreview")
 			.expect(400)
-			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Bad Request" });
-			});
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
 	});
 	test("400 Bad request if the data type of the review id is decimal ", () => {
 		return request(app)
 			.get("/api/reviews/3.2")
 			.expect(400)
-			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Bad Request" });
-			});
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
 	});
 });
 
@@ -113,14 +104,14 @@ describe("GET /api/reviews/:review_id/comments", () => {
 			.then(({ body }) => {
 				expect(body.comments).toBeSortedBy("created_at", { descending: true });
 				expect(body.comments).toHaveLength(3);
-				for (comment of body.comments) {
+				body.comments.forEach((comment) => {
 					expect(comment).toHaveProperty("comment_id");
 					expect(comment).toHaveProperty("votes");
 					expect(comment).toHaveProperty("created_at");
 					expect(comment).toHaveProperty("author");
 					expect(comment).toHaveProperty("body");
 					expect(comment).toHaveProperty("review_id");
-				}
+				});
 			});
 	});
 	test("200 should return an empty array if the ID is valid, but there are no comments", () => {
@@ -132,22 +123,61 @@ describe("GET /api/reviews/:review_id/comments", () => {
 				expect(body.comments).toEqual([]);
 			});
 	});
-  
+
 	test("404 Not found if review_id isn't in the database", () => {
 		return request(app)
 			.get("/api/reviews/78/comments")
 			.expect(404)
-			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Not found" });
-			});
+			.then(({ body }) => expect(body).toEqual({ msg: "Not found" }));
 	});
 	test("400 If key is not the correct data type", () => {
 		return request(app)
 			.get("/api/reviews/hello/comments")
 			.expect(400)
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
+	});
+});
+
+describe("POST /api/reviews/:review_id/comments should post a new comment when given a body", () => {
+	test("201 should add a new comment to the comments database", () => {
+		return request(app)
+			.post("/api/reviews/2/comments")
+			.send({ author: "mallionaire", body: "Great for beginners" })
+			.expect(201)
 			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Bad Request" });
+				expect(body.comment[0]).toHaveProperty("comment_id");
+				expect(body.comment[0]).toHaveProperty("body");
+				expect(body.comment[0]).toHaveProperty("review_id");
+				expect(body.comment[0]).toHaveProperty("author");
+				expect(body.comment[0]).toHaveProperty("created_at");
+				expect(body.comment[0].review_id).toEqual(2);
+				expect(body.comment[0].author).toEqual("mallionaire");
+				expect(body.comment[0].body).toEqual("Great for beginners");
 			});
+	});
+	test("404 should return an error if given a bad review_id", () => {
+		return request(app)
+			.post("/api/reviews/9001/comments")
+			.send({ author: "mallionaire", body: "Best wardrobe I've ever used" })
+			.expect(404)
+			.then(({ body }) => expect(body).toEqual({ msg: "Not found" }));
+	});
+	test("400 if datatype of the reviewId is wrong", () => {
+		return request(app)
+			.post("/api/reviews/hello/comments")
+			.send({ author: "mallionaire", body: "Hello Granddad!" })
+			.expect(400)
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
+	});
+	test("400 If the body is in an unacceptable format", () => {
+		return request(app)
+			.post("/api/reviews/3/comments")
+			.send({
+				person: "Haz",
+				msg: "Hello, I am still waiting for my delivery of oranges",
+			})
+			.expect(400)
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
 	});
 });
 
