@@ -1,5 +1,5 @@
-const { query } = require("../db/connection");
 const db = require("../db/connection");
+const { fetchAllCategories } = require("./app.models.js");
 
 exports.fetchAllCategories = () => db.query(`SELECT * FROM categories;`);
 
@@ -13,23 +13,34 @@ exports.fetchReview = (reviewId) => {
 		);
 };
 exports.fetchAllReviews = (sortBy, orderBy, category) => {
-	let queryString = `SELECT title, designer, owner, review_img_url, reviews.created_at, reviews.votes, category, reviews.review_id, COUNT(author)::INT AS comment_count
+	const sortByWhiteList = [
+		"title",
+		"designer",
+		"owner",
+		"review_img_url",
+		"review_id",
+		"category",
+		"created_at",
+		"votes",
+	];
+	if (!sortByWhiteList.includes(sortBy))
+		return Promise.reject({ status: 400, msg: "Bad request" });
+	else if (orderBy !== "ASC" && orderBy !== "DESC" && orderBy)
+		return Promise.reject({ status: 400, msg: "Bad request" });
+	else
+		return db.query(`SELECT * FROM categories;`).then((categories) => {
+			listOfCategories = categories.rows.map((category) => category.slug);
+
+			let queryString = `SELECT title, designer, owner, review_img_url, reviews.created_at, reviews.votes, category, reviews.review_id, COUNT(author)::INT AS comment_count
     FROM reviews LEFT JOIN comments ON reviews.owner = comments.author `;
+			queryString += "WHERE category LIKE CAST('" + category + "' AS varchar)";
+			queryString += " GROUP BY reviews.review_id ";
+			queryString += "ORDER BY " + sortBy + " " + orderBy;
 
-	if (category) {
-		queryString += "WHERE category = CAST(" + category + " AS varchar)";
-	}
-	queryString += " GROUP BY reviews.review_id ";
-	queryString += "ORDER BY " + sortBy + " " + orderBy;
-
-	return db
-		.query(queryString)
-		.then((result) =>
-			result.rowCount === 0
-				? Promise.reject({ status: 404, msg: "Not found" })
-				: result.rows
-		);
+			return db.query(queryString).then((result) => result.rows);
+		});
 };
+
 exports.fetchReviewComments = (review_id) => {
 	return db
 		.query(

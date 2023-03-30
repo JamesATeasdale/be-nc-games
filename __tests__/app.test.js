@@ -357,7 +357,7 @@ describe("GET /api/reviews (queries) should get reviews and sort them by the giv
 	test("200 if given the correct category values", () => {
 		return Promise.all([
 			request(app)
-				.get("/api/reviews?sortBy=votes&category='social deduction'")
+				.get("/api/reviews?sortBy=votes&category=social deduction")
 				.expect(200)
 				.then(({ body }) => {
 					expect(body.reviews).toBeSortedBy("votes", { descending: true });
@@ -366,7 +366,7 @@ describe("GET /api/reviews (queries) should get reviews and sort them by the giv
 					});
 				}),
 			request(app)
-				.get("/api/reviews?sortBy=votes&orderBy=ASC&category='dexterity'")
+				.get("/api/reviews?sortBy=votes&orderBy=ASC&category=dexterity")
 
 				.expect(200)
 				.then(({ body }) => {
@@ -383,7 +383,7 @@ describe("GET /api/reviews (queries) should get reviews and sort them by the giv
 				}),
 		]);
 	});
-	test("400 if sortBy, orderBy or category is an invalid datatype", () => {
+	test("400 if sortBy, orderBy or category is invalid", () => {
 		return Promise.all([
 			request(app)
 				.get("/api/reviews?sortBy=bestdog")
@@ -397,21 +397,27 @@ describe("GET /api/reviews (queries) should get reviews and sort them by the giv
 				.then(({ body }) => {
 					expect(body).toEqual({ msg: "Bad request" });
 				}),
+			request(app)
+				.get("/api/reviews?sortBy=vote&orderBy=ASC&?category=dexterity")
+				.expect(400)
+				.then(({ body }) => {
+					expect(body).toEqual({ msg: "Bad request" });
+				}),
 		]);
 	});
-	test("404 if sortBy or orderBy is invalid", () => {
+	test("200 with empty array if categories don't exist", () => {
 		return Promise.all([
 			request(app)
-				.get("/api/reviews?category='birthday'")
-				.expect(404)
+				.get("/api/reviews?category=birthday")
+				.expect(200)
 				.then(({ body }) => {
-					expect(body).toEqual({ msg: "Not found" });
+					expect(body.reviews).toEqual([]);
 				}),
 			request(app)
 				.get("/api/reviews?category=7")
-				.expect(404)
+				.expect(200)
 				.then(({ body }) => {
-					expect(body).toEqual({ msg: "Not found" });
+					expect(body.reviews).toEqual([]);
 				}),
 		]);
 	});

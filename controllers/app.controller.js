@@ -20,31 +20,12 @@ exports.getReview = (req, res, next) =>
 		.catch((err) => next(err));
 
 exports.getAllReviews = (req, res, next) => {
-	const sortByWhiteList = [
-		"title",
-		"designer",
-		"owner",
-		"review_img_url",
-		"review_id",
-		"category",
-		"created_at",
-		"votes",
-	];
-	const {
-		sortBy = "created_at",
-		orderBy = "DESC",
-		category = false,
-	} = req.query;
-	if (!sortByWhiteList.includes(sortBy) && sortBy) {
-		res.status(400).send({ msg: "Bad request" });
-	}
-	if (orderBy !== "ASC" && orderBy !== "DESC" && orderBy) {
-		res.status(400).send({ msg: "Bad request" });
-	} else
-		fetchAllReviews(sortBy, orderBy, category)
-			.then((reviews) => res.status(200).send({ reviews }))
-			.catch((err) => next(err));
+	const { sortBy = "created_at", orderBy = "DESC", category = "%" } = req.query;
+	fetchAllReviews(sortBy, orderBy, category)
+		.then((reviews) => res.status(200).send({ reviews }))
+		.catch((err) => next(err));
 };
+
 exports.getReviewComments = (req, res, next) => {
 	const reviewId = req.params.review_id;
 	Promise.all([fetchReview(reviewId), fetchReviewComments(reviewId)])
