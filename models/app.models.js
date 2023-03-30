@@ -58,6 +58,6 @@ exports.removeComment = (commentId) => {
 		.then((result) =>
 			result.rowCount === 0
 				? Promise.reject({ status: 404, msg: "Not found" })
-				: result.rows
+				: {}
 		);
 };

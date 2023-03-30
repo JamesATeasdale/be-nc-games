@@ -279,35 +279,24 @@ describe("PATCH /api/reviews/:review_id should change vote value", () => {
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
-	test("202 if deleting was a success ", () => {
+	test("204 if deleting was a success ", () => {
 		return request(app)
 			.delete("/api/comments/6")
-			.expect(202)
-			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Comment removed" });
-			})
-			.then(() => {
-				return db.query("SELECT * FROM comments");
-			})
-			.then((body) => {
-				expect(body.rows).toHaveLength(5);
-			});
+			.expect(204)
+			.then(() => db.query("SELECT * FROM comments"))
+			.then((body) => expect(body.rows).toHaveLength(5));
 	});
 	test("404 if no comment found", () => {
 		return request(app)
 			.delete("/api/comments/70")
 			.expect(404)
-			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Not found" });
-			});
+			.then(({ body }) => expect(body).toEqual({ msg: "Not found" }));
 	});
 	test("400 if wrong data type", () => {
 		return request(app)
 			.delete("/api/comments/hello")
 			.expect(400)
-			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Bad request" });
-			});
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad request" }));
 	});
 });
 
