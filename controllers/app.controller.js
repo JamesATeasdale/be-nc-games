@@ -6,6 +6,7 @@ const {
 	addComment,
 	changeReview,
 	removeComment,
+	fetchUsers,
 } = require("../models/app.models");
 
 exports.getAllCategories = (req, res) =>
@@ -51,4 +52,8 @@ exports.deleteComment = (req, res, next) => {
 	removeComment(commentId)
 		.then(() => res.status(204).send())
 		.catch((err) => next(err));
+};
+
+exports.getUsers = (req, res, next) => {
+	fetchUsers().then((users) => res.status(200).send({ users: users.rows }));
 };
