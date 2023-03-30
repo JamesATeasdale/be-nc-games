@@ -309,7 +309,7 @@ describe("GET /api/users should return a list of all users", () => {
 	});
 });
 
-describe.only("GET /api/reviews (queries) should get reviews and sort them by the given value", () => {
+describe("GET /api/reviews (queries) should get reviews and sort them by the given value", () => {
 	test("200 should return the reviews in the correct order", () => {
 		return Promise.all([
 			request(app)
