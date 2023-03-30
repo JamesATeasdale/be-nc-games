@@ -1,6 +1,6 @@
 exports.badDataType = (err, req, res, next) =>
 	err.code === "22P02" || err.code === "23502"
-		? res.status(400).send({ msg: "Bad Request" })
+		? res.status(400).send({ msg: "Bad request" })
 		: next(err);
 
 exports.customErrors = (err, req, res, next) => {
