@@ -49,3 +49,15 @@ exports.changeReview = (reviewId, patch) => {
 		)
 		.then((updatedReview) => updatedReview.rows[0]);
 };
+
+exports.removeComment = (commentId) => {
+	return db
+		.query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`, [
+			commentId,
+		])
+		.then((result) =>
+			result.rowCount === 0
+				? Promise.reject({ status: 404, msg: "Not found" })
+				: result.rows
+		);
+};

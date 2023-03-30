@@ -7,6 +7,7 @@ const {
 	getReviewComments,
 	postComment,
 	patchReview,
+	deleteComment,
 } = require("./controllers/app.controller");
 const {
 	notFound,
@@ -28,6 +29,8 @@ app.get("/api/reviews", getAllReviews);
 app.post("/api/reviews/:review_id/comments", postComment);
 
 app.patch("/api/reviews/:review_id", patchReview);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.all("/*", notFound);
 

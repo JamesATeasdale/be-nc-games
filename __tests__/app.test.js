@@ -64,13 +64,13 @@ describe("GET /api/reviews/:review_id should return the information bound to tha
 		return request(app)
 			.get("/api/reviews/myreview")
 			.expect(400)
-			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad request" }));
 	});
 	test("400 Bad request if the data type of the review id is decimal ", () => {
 		return request(app)
 			.get("/api/reviews/3.2")
 			.expect(400)
-			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad request" }));
 	});
 });
 
@@ -134,7 +134,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
 		return request(app)
 			.get("/api/reviews/hello/comments")
 			.expect(400)
-			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad request" }));
 	});
 });
 
@@ -164,7 +164,7 @@ describe("POST /api/reviews/:review_id/comments should post a new comment when g
 			.post("/api/reviews/hello/comments")
 			.send({ author: "mallionaire", body: "Hello Granddad!" })
 			.expect(400)
-			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad request" }));
 	});
 	test("400 If the object is in an unacceptable format", () => {
 		return request(app)
@@ -174,7 +174,7 @@ describe("POST /api/reviews/:review_id/comments should post a new comment when g
 				msg: "Hello, I am still waiting for my delivery of oranges",
 			})
 			.expect(400)
-			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad request" }));
 	});
 	test("400 If the body is fine, but the author key isn't", () => {
 		return request(app)
@@ -184,7 +184,7 @@ describe("POST /api/reviews/:review_id/comments should post a new comment when g
 				body: "I really love this breed of dog, thanks for sharing",
 			})
 			.expect(400)
-			.then(({ body }) => expect(body).toEqual({ msg: "Bad Request" }));
+			.then(({ body }) => expect(body).toEqual({ msg: "Bad request" }));
 	});
 });
 
@@ -253,7 +253,7 @@ describe("PATCH /api/reviews/:review_id should change vote value", () => {
 			})
 			.expect(400)
 			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Bad Request" });
+				expect(body).toEqual({ msg: "Bad request" });
 			});
 	});
 	test("400 if the body is in an incorrect format", () => {
@@ -264,7 +264,7 @@ describe("PATCH /api/reviews/:review_id should change vote value", () => {
 			})
 			.expect(400)
 			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Bad Request" });
+				expect(body).toEqual({ msg: "Bad request" });
 			});
 	});
 	test("400 if reviewId is the wrong data type", () => {
@@ -273,9 +273,41 @@ describe("PATCH /api/reviews/:review_id should change vote value", () => {
 			.send({ votes: 89 })
 			.expect(400)
 			.then(({ body }) => {
-				expect(body).toEqual({ msg: "Bad Request" });
+				expect(body).toEqual({ msg: "Bad request" });
 			});
 	});
 });
 
+describe("DELETE /api/comments/:comment_id", () => {
+	test("202 if deleting was a success ", () => {
+		return request(app)
+			.delete("/api/comments/6")
+			.expect(202)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Comment removed" });
+			})
+			.then(() => {
+				return db.query("SELECT * FROM comments");
+			})
+			.then((body) => {
+				expect(body.rows).toHaveLength(5);
+			});
+	});
+	test("404 if no comment found", () => {
+		return request(app)
+			.delete("/api/comments/70")
+			.expect(404)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Not found" });
+			});
+	});
+	test("400 if wrong data type", () => {
+		return request(app)
+			.delete("/api/comments/hello")
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toEqual({ msg: "Bad request" });
+			});
+	});
+});
 
