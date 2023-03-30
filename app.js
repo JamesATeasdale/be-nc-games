@@ -27,13 +27,15 @@ app.get("/api/reviews/:review_id/comments", getReviewComments);
 
 app.get("/api/reviews", getAllReviews);
 
+app.get("/api/users", getUsers);
+
 app.post("/api/reviews/:review_id/comments", postComment);
 
 app.patch("/api/reviews/:review_id", patchReview);
 
 app.delete("/api/comments/:comment_id", deleteComment);
 
-app.get("/api/users", getUsers);
+
 
 app.all("/*", notFound);
 
