@@ -6,12 +6,13 @@ const {
 	addComment,
 	changeReview,
 	removeComment,
+	fetchUsers,
 } = require("../models/app.models");
 
 exports.getAllCategories = (req, res) =>
-	fetchAllCategories().then((categories) =>
-		res.status(200).send({ categories: categories.rows })
-	);
+	fetchAllCategories()
+		.then((categories) => res.status(200).send({ categories: categories.rows }))
+		.catch((err) => next(err));
 
 exports.getReview = (req, res, next) =>
 	fetchReview(req.params.review_id)
@@ -50,5 +51,11 @@ exports.deleteComment = (req, res, next) => {
 	const commentId = req.params.comment_id;
 	removeComment(commentId)
 		.then(() => res.status(204).send())
+		.catch((err) => next(err));
+};
+
+exports.getUsers = (req, res, next) => {
+	fetchUsers()
+		.then((users) => res.status(200).send({ users: users.rows }))
 		.catch((err) => next(err));
 };

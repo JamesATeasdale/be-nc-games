@@ -300,3 +300,11 @@ describe("DELETE /api/comments/:comment_id", () => {
 	});
 });
 
+describe("GET /api/users should return a list of all users", () => {
+	test("200 should return a body containing all users", () => {
+		return request(app)
+			.get("/api/users")
+			.expect(200)
+			.then(({ body }) => expect(body.users).toHaveLength(4));
+	});
+});
