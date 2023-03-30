@@ -308,3 +308,117 @@ describe("GET /api/users should return a list of all users", () => {
 			.then(({ body }) => expect(body.users).toHaveLength(4));
 	});
 });
+
+describe("GET /api/reviews (queries) should get reviews and sort them by the given value", () => {
+	test("200 should return the reviews in the correct order", () => {
+		return Promise.all([
+			request(app)
+				.get("/api/reviews?sortBy=votes")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toBeSortedBy("votes", { descending: true });
+				}),
+			request(app)
+				.get("/api/reviews?sortBy=review_id")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toBeSortedBy("review_id", { descending: true });
+				}),
+			request(app)
+				.get("/api/reviews?sortBy=category")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toBeSortedBy("category", { descending: true });
+				}),
+		]);
+	});
+	test("200 if given the correct orderBy values", () => {
+		return Promise.all([
+			request(app)
+				.get("/api/reviews?sortBy=votes&orderBy=ASC")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toBeSortedBy("votes", { descending: false });
+				}),
+			request(app)
+				.get("/api/reviews?sortBy=review_id&orderBy=DESC")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toBeSortedBy("review_id", { descending: true });
+				}),
+			request(app)
+				.get("/api/reviews?sortBy=category&orderBy=ASC")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toBeSortedBy("category", { descending: false });
+				}),
+		]);
+	});
+	test("200 if given the correct category values", () => {
+		return Promise.all([
+			request(app)
+				.get("/api/reviews?sortBy=votes&category=social deduction")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toBeSortedBy("votes", { descending: true });
+					body.reviews.forEach((game) => {
+						expect(game.category).toEqual("social deduction");
+					});
+				}),
+			request(app)
+				.get("/api/reviews?sortBy=votes&orderBy=ASC&category=dexterity")
+
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toBeSortedBy("votes");
+					body.reviews.forEach((game) => {
+						expect(game.category).toEqual("dexterity");
+					});
+				}),
+			request(app)
+				.get("/api/reviews?sortBy=category&orderBy=ASC")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toBeSortedBy("category", { descending: false });
+				}),
+		]);
+	});
+	test("400 if sortBy, orderBy or category is invalid", () => {
+		return Promise.all([
+			request(app)
+				.get("/api/reviews?sortBy=bestdog")
+				.expect(400)
+				.then(({ body }) => {
+					expect(body).toEqual({ msg: "Bad request" });
+				}),
+			request(app)
+				.get("/api/reviews?orderBy=birthday")
+				.expect(400)
+				.then(({ body }) => {
+					expect(body).toEqual({ msg: "Bad request" });
+				}),
+			request(app)
+				.get("/api/reviews?sortBy=vote&orderBy=ASC&?category=dexterity")
+				.expect(400)
+				.then(({ body }) => {
+					expect(body).toEqual({ msg: "Bad request" });
+				}),
+		]);
+	});
+	test("200 with empty array if categories don't exist", () => {
+		return Promise.all([
+			request(app)
+				.get("/api/reviews?category=birthday")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toEqual([]);
+				}),
+			request(app)
+				.get("/api/reviews?category=7")
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.reviews).toEqual([]);
+				}),
+		]);
+	});
+});

@@ -19,10 +19,12 @@ exports.getReview = (req, res, next) =>
 		.then((review) => res.status(200).send({ review }))
 		.catch((err) => next(err));
 
-exports.getAllReviews = (req, res, next) =>
-	fetchAllReviews()
+exports.getAllReviews = (req, res, next) => {
+	const { sortBy = "created_at", orderBy = "DESC", category = "%" } = req.query;
+	fetchAllReviews(sortBy, orderBy, category)
 		.then((reviews) => res.status(200).send({ reviews }))
 		.catch((err) => next(err));
+};
 
 exports.getReviewComments = (req, res, next) => {
 	const reviewId = req.params.review_id;
