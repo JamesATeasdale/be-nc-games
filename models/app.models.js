@@ -81,3 +81,6 @@ exports.removeComment = (commentId) => {
 };
 
 exports.fetchUsers = () => db.query("SELECT * FROM users");
+
+exports.fetchUsername = (username) =>
+	db.query("SELECT * FROM users WHERE username = $1", [username]);

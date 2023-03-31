@@ -8,6 +8,7 @@ const {
 	changeReview,
 	removeComment,
 	fetchUsers,
+	fetchUsername,
 } = require("../models/app.models");
 
 exports.getAllCategories = (req, res, next) =>
@@ -61,5 +62,14 @@ exports.getUsers = (req, res, next) =>
 	fetchUsers()
 		.then((users) => res.status(200).send({ users: users.rows }))
 		.catch((err) => next(err));
+
+exports.getUsername = (req, res, next) => {
+	const { username } = req.params;
+	fetchUsername(username)
+		.then((user) => {
+			res.status(200).send({ user: user.rows });
+		})
+		.catch((err) => next(err));
+};
 
 exports.readEndpoint = (req, res, next) => res.status(200).send({ endpoints });

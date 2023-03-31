@@ -10,6 +10,7 @@ const {
 	deleteComment,
 	getUsers,
 	readEndpoint,
+	getUsername,
 } = require("./controllers/app.controller");
 const {
 	notFound,
@@ -31,6 +32,8 @@ app.get("/api/reviews", getAllReviews);
 app.get("/api/users", getUsers);
 
 app.get("/api", readEndpoint);
+
+app.get("/api/users/:username", getUsername);
 
 app.post("/api/reviews/:review_id/comments", postComment);
 
