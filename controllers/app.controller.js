@@ -10,7 +10,7 @@ const {
 	fetchUsers,
 } = require("../models/app.models");
 
-exports.getAllCategories = (req, res) =>
+exports.getAllCategories = (req, res, next) =>
 	fetchAllCategories()
 		.then((categories) => res.status(200).send({ categories: categories.rows }))
 		.catch((err) => next(err));
