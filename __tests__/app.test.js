@@ -434,3 +434,30 @@ describe("returns the endpoint json contents", () => {
 			});
 	});
 });
+
+describe.only("Returns a user that matches the specified username", () => {
+	test("200 Should return the correct user", () => {
+		const philippa = [
+			{
+				username: "philippaclaire9",
+				name: "philippa",
+				avatar_url:
+					"https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+			},
+		];
+		return request(app)
+			.get("/api/users/philippaclaire9")
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.user).toEqual(philippa);
+			});
+	});
+	test("200 Should return an empty array if no user was found", () => {
+		return request(app)
+			.get("/api/users/bela")
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.user).toEqual([]);
+			});
+	});
+});
