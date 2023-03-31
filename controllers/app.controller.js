@@ -62,8 +62,4 @@ exports.getUsers = (req, res, next) =>
 		.then((users) => res.status(200).send({ users: users.rows }))
 		.catch((err) => next(err));
 
-exports.readEndpoint = (req, res, next) =>
-	res
-		.status(200)
-		.send({ endpoints })
-		.catch((err) => next(err));
+exports.readEndpoint = (req, res, next) => res.status(200).send({ endpoints });
