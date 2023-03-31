@@ -1,6 +1,4 @@
 const db = require("../db/connection");
-const fs = require("fs");
-const { json } = require("express");
 
 exports.fetchAllCategories = () => db.query(`SELECT * FROM categories;`);
 
