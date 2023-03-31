@@ -83,9 +83,3 @@ exports.removeComment = (commentId) => {
 };
 
 exports.fetchUsers = () => db.query("SELECT * FROM users");
-
-exports.readFileEndpoint = () => {
-	return fs.promises
-		.readFile(`${__dirname}/../endpoints.json`)
-		.then((data) => JSON.parse(data));
-};

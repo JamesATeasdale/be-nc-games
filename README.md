@@ -4,7 +4,7 @@
 
 This is an api server for managing reviews of certain games and their respective comments.
 
-A live version of this database can be found here: https://nc-games-id50.onrender.com/api/categories
+A live version of this database can be found here: (https://nc-games-id50.onrender.com/api/categories)
 
 All items in every section are automatically assigned an ID.
 
@@ -52,6 +52,9 @@ avatar <STRING>
 
 ## Setup
 
+Node.js version = v.19.6.0
+PSQL version = 15.1
+
 # Files
 
 The structure of this app follows an MVC pattern with corresponding tests that uses a test database. The test database is a considerably smaller version of the database that you would use for this app, but follows a very similar format. This allows tests to run much faster.
@@ -70,10 +73,6 @@ To set everything up, you need to run the following command in the terminal to i
 
 ```
 npm install
-```
-
-```
-npm install express
 ```
 
 Your scripts section should look something like this:

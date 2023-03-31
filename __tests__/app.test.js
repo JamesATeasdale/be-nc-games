@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
+const endpoints = require("../endpoints.json");
 require("jest-sorted");
 
 afterAll(() => db.end());
@@ -429,7 +430,7 @@ describe("returns the endpoint json contents", () => {
 			.get("/api")
 			.expect(200)
 			.then(({ body }) => {
-				expect(typeof body).toEqual("object");
+				expect(body.endpoints).toEqual(endpoints);
 			});
 	});
 });
