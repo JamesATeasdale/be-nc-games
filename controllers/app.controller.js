@@ -7,6 +7,7 @@ const {
 	changeReview,
 	removeComment,
 	fetchUsers,
+	readFileEndpoint,
 } = require("../models/app.models");
 
 exports.getAllCategories = (req, res) =>
@@ -61,3 +62,8 @@ exports.getUsers = (req, res, next) => {
 		.then((users) => res.status(200).send({ users: users.rows }))
 		.catch((err) => next(err));
 };
+
+exports.readEndpoint = (req, res, next) =>
+	readFileEndpoint()
+		.then((endpoint) => res.status(200).send(endpoint))
+		.catch((err) => next(err));

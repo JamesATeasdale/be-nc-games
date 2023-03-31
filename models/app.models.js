@@ -1,5 +1,6 @@
 const db = require("../db/connection");
-const { fetchAllCategories } = require("./app.models.js");
+const fs = require("fs");
+const { json } = require("express");
 
 exports.fetchAllCategories = () => db.query(`SELECT * FROM categories;`);
 
@@ -82,3 +83,9 @@ exports.removeComment = (commentId) => {
 };
 
 exports.fetchUsers = () => db.query("SELECT * FROM users");
+
+exports.readFileEndpoint = () => {
+	return fs.promises
+		.readFile(`${__dirname}/../endpoints.json`)
+		.then((data) => JSON.parse(data));
+};

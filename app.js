@@ -9,6 +9,7 @@ const {
 	patchReview,
 	deleteComment,
 	getUsers,
+	readEndpoint,
 } = require("./controllers/app.controller");
 const {
 	notFound,
@@ -29,19 +30,17 @@ app.get("/api/reviews", getAllReviews);
 
 app.get("/api/users", getUsers);
 
+app.get("/api", readEndpoint);
+
 app.post("/api/reviews/:review_id/comments", postComment);
 
 app.patch("/api/reviews/:review_id", patchReview);
 
 app.delete("/api/comments/:comment_id", deleteComment);
 
-
-
 app.all("/*", notFound);
-
 app.use(badDataType);
 app.use(customErrors);
 app.use(errorChecker);
-
 
 module.exports = app;

@@ -422,3 +422,14 @@ describe("GET /api/reviews (queries) should get reviews and sort them by the giv
 		]);
 	});
 });
+
+describe("returns the endpoint json contents", () => {
+	test("200 should return the endpoints.json as a body", () => {
+		return request(app)
+			.get("/api")
+			.expect(200)
+			.then(({ body }) => {
+				expect(typeof body).toEqual("object");
+			});
+	});
+});
