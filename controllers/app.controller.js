@@ -1,3 +1,4 @@
+const endpoints = require("../endpoints.json");
 const {
 	fetchAllCategories,
 	fetchAllReviews,
@@ -56,8 +57,9 @@ exports.deleteComment = (req, res, next) => {
 		.catch((err) => next(err));
 };
 
-exports.getUsers = (req, res, next) => {
+exports.getUsers = (req, res, next) =>
 	fetchUsers()
 		.then((users) => res.status(200).send({ users: users.rows }))
 		.catch((err) => next(err));
-};
+
+exports.readEndpoint = (req, res, next) => res.status(200).send({ endpoints });

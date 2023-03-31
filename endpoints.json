@@ -1,34 +1,62 @@
 {
-  "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
-  },
-  "GET /api/categories": {
-    "description": "serves an array of all categories",
-    "queries": [],
-    "exampleResponse": {
-      "categories": [
-        {
-          "description": "Players attempt to uncover each other's hidden role",
-          "slug": "Social deduction"
-        }
-      ]
-    }
-  },
-  "GET /api/reviews": {
-    "description": "serves an array of all reviews",
-    "queries": ["category", "sort_by", "order"],
-    "exampleResponse": {
-      "reviews": [
-        {
-          "title": "One Night Ultimate Werewolf",
-          "designer": "Akihisa Okui",
-          "owner": "happyamy2016",
-          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-          "category": "hidden-roles",
-          "created_at": 1610964101251,
-          "votes": 5
-        }
-      ]
-    }
-  }
+	"GET /api": {
+		"description": "serves up a json representation of all the available endpoints of the api"
+	},
+	"GET /api/categories": {
+		"description": "serves an array of all categories",
+		"queries": [],
+		"exampleResponse": {
+			"categories": [
+				{
+					"description": "Players attempt to uncover each other's hidden role",
+					"slug": "Social deduction"
+				}
+			]
+		}
+	},
+	"GET /api/reviews": {
+		"description": "serves an array of all reviews",
+		"queries": ["category", "sort_by", "order"],
+		"exampleResponse": {
+			"reviews": [
+				{
+					"title": "One Night Ultimate Werewolf",
+					"designer": "Akihisa Okui",
+					"owner": "happyamy2016",
+					"review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+					"category": "hidden-roles",
+					"created_at": 1610964101251,
+					"votes": 5
+				}
+			]
+		}
+	},
+	"GET /api/users": {
+		"description": "serves an object containing all of the users",
+		"exampleResponse": {
+			"users": [
+				{
+					"username": "bainesface",
+					"name": "sarah",
+					"avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+				}
+			]
+		}
+	},
+	"POST /api/reviews/:review_id/comments": {
+		"description": "allows the user to post a comment to the database assigned to the given review_id",
+		"exampleBody": {
+			"author": "Poonam",
+			"body": "I agree, Turtle Simulator is the greatest game of all time!"
+		}
+	},
+	"PATCH /api/reviews/:review_id": {
+		"description": "allows a user to increment or decrement a review's vote by a given value",
+		"examplyBody": {
+			"votes": 50
+		}
+	},
+	"DELETE /api/comments/:comment_id": {
+		"description": "allows a user to delete a specific comment from the database"
+	}
 }

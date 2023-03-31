@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
+const endpoints = require("../endpoints.json");
 require("jest-sorted");
 
 afterAll(() => db.end());
@@ -420,5 +421,16 @@ describe("GET /api/reviews (queries) should get reviews and sort them by the giv
 					expect(body.reviews).toEqual([]);
 				}),
 		]);
+	});
+});
+
+describe("returns the endpoint json contents", () => {
+	test("200 should return the endpoints.json as a body", () => {
+		return request(app)
+			.get("/api")
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.endpoints).toEqual(endpoints);
+			});
 	});
 });
