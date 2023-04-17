@@ -18,6 +18,10 @@ const {
 	errorChecker,
 } = require("./controllers/errors.controller");
 
+const cors = require("cors");
+
+app.use(cors());
+
 app.use(express.json());
 
 app.get("/api/categories", getAllCategories);
